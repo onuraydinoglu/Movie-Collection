@@ -8,4 +8,5 @@
   
 # Projenin Ekran Görüntüsü
 
-  ![Proje Logosu](images/filmArsivi.png)
+  ![Proje Logosu](images/2.png)
+  ![Proje Logosu](images/1.png)
