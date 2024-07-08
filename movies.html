@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"/>
+    <title>Movies</title>
+
+    <style>
+        body{
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .movie-image{
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .border{
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="mb-4 text-center">Film Arşivi</h1>
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label for="movieName" class="form-label">Film Adı:</label>
+                    <input type="text" class="form-control" id="movieName" placeholder="Film adını girin">
+                </div>
+                <div class="mb-3">
+                    <label for="imageUrl" class="form-label">Film URL:</label>
+                    <input type="text" class="form-control" id="imageUrl" placeholder="Film görsel URL'sini girin">
+                </div>
+                <button class="btn btn-success w-100" onclick="addMovie()">Filmi Ekle</button>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <div class="w-50 pe-2">
+                <h2 class="mt-4 text-center">İzlenecek Filmler</h2>
+                <p id="noMovies" class="text-center text-muted"></p>
+                <div id="movieList" class="row"></div>
+            </div>
+            <div class="w-50 ps-2">
+                <h2 class="mt-4 text-center">İzlenen Filmler</h2>
+                <p id="noWatchedMovies" class="text-center text-muted">Henüz izlenen film yok.</p>
+                <div id="watchedList" class="row"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function checkNoMovies(){
+            var movieList = document.getElementById('movieList');
+            var noMovies = document.getElementById('noMovies');
+            if(movieList.children.length === 0){
+                noMovies.textContent = 'Henüz film izlemediniz.';
+            } else {
+                noMovies.textContent = ' ';
+            }
+        }
+
+        function checkNoWatchedMovies(){
+            var watchedList = document.getElementById('watchedList');
+            var noWatchedMovies = document.getElementById('noWatchedMovies');
+            if(watchedList.children.length === 0){
+                noWatchedMovies.style.display = 'block';
+            } else {
+                noWatchedMovies.style.display = 'none';
+            }
+        }
+
+        function addMovie(){
+            var movieName = document.getElementById('movieName').value;
+            var imageUrl = document.getElementById('imageUrl').value;
+
+            if(movieName.trim() === '' || imageUrl.trim() === ''){
+                alert('Lütfen film adı ve resim URL\'si girin.');
+                return;
+            }
+
+            var movieList = document.getElementById('movieList');
+            var card = document.createElement('div');
+            card.className = 'col-md-12';
+
+            card.innerHTML = `
+                <div class="card h-80">
+                    <div class="d-flex align-items-center p-3 shadow bg-white rounded">
+                        <img src="${imageUrl}" class="movie-image me-3 border" alt="${movieName}">
+                        <div class="flex-grow-1 d-flex align-items-center">
+                            <h5 class="card-title">${movieName}</h5>
+                            <div class="d-flex justify-content-end ms-auto">
+                                <button class="btn btn-success me-2" onclick="watchMovie(this)">İzlendi</button>
+                                <button class="btn btn-danger" onclick="removeMovie(this)">Kaldır</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            movieList.appendChild(card);
+
+            document.getElementById('movieName').value='';
+            document.getElementById('imageUrl').value='';
+
+            checkNoMovies()
+        }
+
+        function watchMovie(button){
+            var card = button.closest('.col-md-12');
+            var watchedList = document.getElementById('watchedList');
+
+            var emotion = prompt('Filmle alakalı görüşlerinizi yazınız:');
+            if(emotion.trim() === ''){
+                alert('Lütfen film ile ilgili görüşlerinizi yazın.');
+                return;
+            }
+
+            var movieTitle = card.querySelector('.card-title').textContent;
+            var movieImage = card.querySelector('.movie-image').src;
+
+            card.innerHTML = `
+                <div class="card h-80">
+                    <div class="d-flex align-items-center p-3 shadow bg-white rounded">
+                        <img src="${movieImage}" class="movie-image me-3 border" alt="${movieTitle}">
+                        <div class="flex-grow-1 d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">${movieTitle}</h5>
+                            <p class="card-text mb-0 ms-3">${emotion}</p>
+                            <div class="d-flex justify-content-end ms-auto">
+                                <span class="text-success">İzlendi</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            watchedList.appendChild(card);
+            checkNoMovies();
+            checkNoWatchedMovies();
+        }
+
+        function removeMovie(button){
+            var card = button.closest('.col-md-12');
+            card.remove();
+            checkNoMovies();
+            checkNoWatchedMovies();
+        }
+    </script>
+</body>
+</html>
